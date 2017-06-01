@@ -6,36 +6,34 @@
 #'                       resolution. Otherwise, set this to a vector giving
 #'                       desired (img_height, img_width).
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
+#' @family image
+#' @family preprocessing
 load_img <- function(path, grayscale = FALSE, target_size = NULL) {
 
   if (!is.null(target_size))
     target_size <- as.integer(target_size)
 
-  modules$keras.preprocessing.image$load_img(path = path, grayscale = grayscale,
+  modules$keras.preprocessing.image$load_img(path = path,
+                                             grayscale = grayscale,
                                              target_size = target_size)
 }
 
 #' Converts a PIL Image instance to a Numpy array.
 #'
-#' @param img          PIL image file; usually loaded with \code{load_img}
+#' @param img          PIL image file; usually loaded with [load_img]
 #' @param data_format  either "channels_first" or "channels_last".
 #'
 #' @return A 3D numeric array.
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
+#' @family image
+#' @family preprocessing
 img_to_array <- function(img, data_format = NULL) {
-  modules$keras.preprocessing.image$img_to_array(img = img, data_format = data_format)
+  modules$keras.preprocessing.image$img_to_array(img = img,
+                                                 data_format = data_format)
 }
 
 #' Expand dimensions of an array
@@ -47,12 +45,9 @@ img_to_array <- function(img, data_format = NULL) {
 #' @param a      array to expand
 #' @param axis   position (amongst axes) where new axis is to be inserted.
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
+#' @family preprocessing
 expand_dims <- function(a, axis = 0) {
   modules$np$expand_dims(a = a, axis = int32(axis))
 }
@@ -60,67 +55,73 @@ expand_dims <- function(a, axis = 0) {
 #' Split a sentence into a list of words.
 #'
 #' @param text      a string
-#' @param filters   vector (or concatenation) of characters to filter out, such as punctuation.
+#' @param filters   vector (or concatenation) of characters to filter out,
+#'                  such as punctuation.
 #' @param lower     boolean. Whether to set the text to lowercase.
 #' @param split     string. Separator for word splitting.
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
-text_to_word_sequence <- function(text, filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
-                                  lower = TRUE, split = " ") {
-  modules$keras.preprocessing.text$text_to_word_sequence(text = text, filters = filters,
-                                                          lower = lower, split = split)
+#' @family preprocessing
+text_to_word_sequence <- function(text,
+                    filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
+                    lower = TRUE,
+                    split = " ") {
+  modules$keras.preprocessing.text$text_to_word_sequence(text = text,
+                                                         filters = filters,
+                                                         lower = lower,
+                                                         split = split)
 }
 
-#' One-hot encode a text into a list of word indexes in a vocabulary of size n.
+#' One-hot encode a text into a list of word indexes
 #'
 #' @param text      a string
 #' @param n         integer. Size of vocabulary.
-#' @param filters   vector (or concatenation) of characters to filter out, such as punctuation.
+#' @param filters   vector (or concatenation) of characters to filter out,
+#'                  such as punctuation.
 #' @param lower     boolean. Whether to set the text to lowercase.
 #' @param split     string. Separator for word splitting.
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
-one_hot <- function(text, n, filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
+#' @family preprocessing
+one_hot <- function(text, n,
+                    filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
                     lower = TRUE, split = " ") {
-  modules$keras.preprocessing.text$one_hot(text = text, n = int32(n), filters = filters,
-                                           lower = lower, split = split)
+  modules$keras.preprocessing.text$one_hot(text = text, n = int32(n),
+                                           filters = filters,
+                                           lower = lower,
+                                           split = split)
 }
 
 #' Tokenizer
 #'
-#' Returns an object for vectorizing texts, or/and turning texts into sequences
-#' (=list of word indexes, where the word of rank i in the dataset (starting at 1)
-#' has index i).
+#' Returns an object for vectorizing texts, or/and turning texts into
+#' sequences (=list of word indexes, where the word of rank i in the
+#' dataset (starting at 1) has index i).
 #'
-#' @param num_words  integer. None or int. Maximum number of words to work with.
-#' @param filters    vector (or concatenation) of characters to filter out, such as punctuation.
+#' @param num_words  integer. None or int. Maximum number of words to
+#'                   work with.
+#' @param filters    vector (or concatenation) of characters to filter
+#'                   out, such as punctuation.
 #' @param lower      boolean. Whether to set the text to lowercase.
 #' @param split      string. Separator for word splitting.
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
-Tokenizer <- function(num_words = NULL, filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
-                    lower = TRUE, split = " ") {
+#' @family preprocessing
+Tokenizer <- function(num_words = NULL,
+                      filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
+                      lower = TRUE,
+                      split = " ") {
 
   if (!is.null(num_words))
     num_words <- int32(num_words)
 
-  modules$keras.preprocessing.text$Tokenizer(num_words = num_words, filters = filters,
-                                              lower = lower, split = split)
+  modules$keras.preprocessing.text$Tokenizer(num_words = num_words,
+                                             filters = filters,
+                                             lower = lower,
+                                             split = split)
 }
 
 #' Pad a linear sequence for an RNN input
@@ -134,18 +135,20 @@ Tokenizer <- function(num_words = NULL, filters = '!"#$%&()*+,-./:;<=>?@[\\]^_`{
 #' truncation happens is determined by padding or truncating, respectively.
 #'
 #' @param sequences   vector of lists of int or float.
-#' @param maxlen      None or int. Maximum sequence length, longer sequences are truncated and shorter sequences are padded with zeros at the end.
+#' @param maxlen      None or int. Maximum sequence length, longer sequences
+#'                    are truncated and shorter sequences are padded with
+#'                    zeros at the end.
 #' @param dtype       datatype of the Numpy array returned.
-#' @param padding     'pre' or 'post', pad either before or after each sequence.
-#' @param truncating  'pre' or 'post', remove values from sequences larger than maxlen either in the beginning or in the end of the sequence
+#' @param padding     'pre' or 'post', pad either before or after each
+#'                    sequence.
+#' @param truncating  'pre' or 'post', remove values from sequences larger
+#'                    than maxlen either in the beginning or in the end of
+#'                    the sequence
 #' @param value       float, value to pad the sequences to the desired value.
 #'
-#' @author Taylor B. Arnold, \email{taylor.arnold@@acm.org}
-#' @references
-#'
-#'   Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
-#'
+#' @template boilerplate
 #' @export
+#' @family preprocessing
 pad_sequences <- function(sequences, maxlen = NULL, dtype = 'int32',
                           padding = 'pre', truncating = 'pre',
                           value = 0) {
@@ -153,7 +156,7 @@ pad_sequences <- function(sequences, maxlen = NULL, dtype = 'int32',
   if (!is.null(maxlen))
     maxlen <- int32(maxlen)
 
-  sequences <- lapply(sequences, int32)
+  sequences <- lapply(sequences, modules$np[[dtype]])
 
   modules$keras.preprocessing.sequence$pad_sequences(sequences = sequences,
                                                      maxlen = maxlen,

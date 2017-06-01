@@ -47,18 +47,20 @@ Conv3D(filters, kernel_size, strides = c(1, 1, 1), padding = "valid",
 }
 \arguments{
 \item{filters}{Integer, the dimensionality of the output space
-(i.e. the number output of filters in the convolution).}
+(i.e. the number output of filters in the
+convolution).}
 
-\item{kernel_size}{A pair of integers specifying the dimensions of the 2D
-convolution window.}
+\item{kernel_size}{A pair of integers specifying the dimensions of
+the 2D convolution window.}
 
-\item{strides}{A pair of integers specifying the stride length of the
-convolution.}
+\item{strides}{A pair of integers specifying the stride length
+of the convolution.}
 
-\item{padding}{One of "valid", "causal" or "same" (case-insensitive).}
+\item{padding}{One of "valid", "causal" or "same"
+(case-insensitive).}
 
-\item{dilation_rate}{A pair of integers specifying the dilation rate to use
-for dilated convolution}
+\item{dilation_rate}{A pair of integers specifying the dilation rate
+to use for dilated convolution}
 
 \item{activation}{Activation function to use}
 
@@ -68,55 +70,72 @@ for dilated convolution}
 
 \item{bias_initializer}{Initializer for the bias vector}
 
-\item{kernel_regularizer}{Regularizer function applied to the kernel weights matrix}
+\item{kernel_regularizer}{Regularizer function applied to the kernel
+weights matrix}
 
 \item{bias_regularizer}{Regularizer function applied to the bias vector}
 
-\item{activity_regularizer}{Regularizer function applied to the output of the layer (its "activation").}
+\item{activity_regularizer}{Regularizer function applied to the output
+of the layer (its "activation").}
 
-\item{kernel_constraint}{Constraint function applied to the kernel matrix}
+\item{kernel_constraint}{Constraint function applied to the kernel
+matrix}
 
 \item{bias_constraint}{Constraint function applied to the bias vector}
 
-\item{input_shape}{only need when first layer of a model; sets the input shape
-of the data}
+\item{input_shape}{only need when first layer of a model; sets the
+input shape of the data}
 
-\item{data_format}{A string, one of channels_last (default) or channels_first.
+\item{data_format}{A string, one of channels_last (default) or
+channels_first.
 The ordering of the dimensions in the inputs.}
 
-\item{depth_multiplier}{The number of depthwise convolution output channels for
-each input channel. The total number of depthwise
-convolution output channels will be equal to
-filterss_in * depth_multiplier.}
+\item{depth_multiplier}{The number of depthwise convolution output
+channels for each input channel. The total
+number of depthwise convolution output channels
+will be equal to filterss_in * depth_multiplier.}
 }
 \description{
 Convolution layers
 }
 \examples{
-if (run_examples()) {
-X_train <- array(rnorm(100 * 28 * 28), dim = c(100, 28, 28, 1))
-Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
-
-mod <- Sequential()
-mod$add(Conv2D(filters = 2, kernel_size = c(2, 2),
-               input_shape = c(28, 28, 1)))
-mod$add(Activation("relu"))
-mod$add(MaxPooling2D(pool_size=c(2, 2)))
-mod$add(LocallyConnected2D(filters = 2, kernel_size = c(2, 2)))
-mod$add(Activation("relu"))
-mod$add(MaxPooling2D(pool_size=c(2, 2)))
-mod$add(Dropout(0.25))
-
-mod$add(Flatten())
-mod$add(Dropout(0.5))
-mod$add(Dense(3, activation='softmax'))
-
-keras_compile(mod, loss='categorical_crossentropy', optimizer=RMSprop())
-keras_fit(mod, X_train, Y_train, verbose = 0)
+if(keras_available()) {
+  X_train <- array(rnorm(100 * 28 * 28), dim = c(100, 28, 28, 1))
+  Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
+  
+  mod <- Sequential()
+  mod$add(Conv2D(filters = 2, kernel_size = c(2, 2),
+                 input_shape = c(28, 28, 1)))
+  mod$add(Activation("relu"))
+  mod$add(MaxPooling2D(pool_size=c(2, 2)))
+  mod$add(LocallyConnected2D(filters = 2, kernel_size = c(2, 2)))
+  mod$add(Activation("relu"))
+  mod$add(MaxPooling2D(pool_size=c(2, 2)))
+  mod$add(Dropout(0.25))
+  
+  mod$add(Flatten())
+  mod$add(Dropout(0.5))
+  mod$add(Dense(3, activation='softmax'))
+  
+  keras_compile(mod, loss='categorical_crossentropy', optimizer=RMSprop())
+  keras_fit(mod, X_train, Y_train, verbose = 0)
 }
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other layers: \code{\link{Activation}},
+  \code{\link{ActivityRegularization}},
+  \code{\link{AdvancedActivation}},
+  \code{\link{BatchNormalization}}, \code{\link{Dense}},
+  \code{\link{Dropout}}, \code{\link{Embedding}},
+  \code{\link{Flatten}}, \code{\link{GaussianNoise}},
+  \code{\link{LayerWrapper}},
+  \code{\link{LocallyConnected}}, \code{\link{Masking}},
+  \code{\link{MaxPooling}}, \code{\link{Permute}},
+  \code{\link{RNN}}, \code{\link{RepeatVector}},
+  \code{\link{Reshape}}, \code{\link{Sequential}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

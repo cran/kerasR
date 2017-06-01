@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -74,7 +74,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <div id="overview" class="section level2">
 <h2>Overview</h2>
-<p>Keras provides a language for building neural networks as connections of general purpose layers. In this vignette we illustrate the basic usage of the R interface to Keras. A self-contained introduction to general neural networks is outside the scope of this document; if you are unfamiliar with the general principles we suggest consulting one of the excellent external tutorials. Suggestions include:</p>
+<p>Keras provides a language for building neural networks as connections between general purpose layers. In this vignette we illustrate the basic usage of the R interface to Keras. A self-contained introduction to general neural networks is outside the scope of this document; if you are unfamiliar with the general principles we suggest consulting one of the excellent external tutorials. Suggestions include:</p>
 <ul>
 <li><a href="http://karpathy.github.io/neuralnets/">Hacker’s guide to Neural Networks</a></li>
 <li><a href="http://neuralnetworksanddeeplearning.com/">Neural Networks and Deep Learning</a></li>
@@ -88,20 +88,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Building a model in Keras starts by constructing an empty <code>Sequential</code> model.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(kerasR)
 mod &lt;-<span class="st"> </span><span class="kw">Sequential</span>()</code></pre></div>
-<p>The result of <code>Sequential</code>, as with most of the functions provided by <strong>kerasR</strong>, is a <code>python.builtin.object</code>. This object type, defined from the <strong>reticulate</strong> package, provides direct access to all of the methods and attributes exposed by the underlying python class. To access these, we use the <code>$</code> operator followed by the method name. Layers are added by calling the method, written as a function in $, <code>add</code>. This function takes as an input another <code>python.builtin.object</code>, generally constructed as the output of another <strong>kerasR</strong> function. For example, to add a dense layer to our model we do the following:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">50</span>, <span class="dt">input_shape =</span> <span class="dv">13</span>))</code></pre></div>
-<p>We have now added a dense layer with 200 neurons. The first layer must include a specification of the <code>input_shape</code>, giving the dimensionality of the input data. Here we set the number of input variables equal to 13 squared. Next in the model, we add an activation defined by a rectified linear unit to the model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))</code></pre></div>
+<p>The result of <code>Sequential</code>, as with most of the functions provided by <strong>kerasR</strong>, is a <code>python.builtin.object</code>. This object type, defined from the <strong>reticulate</strong> package, provides direct access to all of the methods and attributes exposed by the underlying python class. To access these, we use the <code>$</code> operator followed by the method name. Layers are added by calling the method <code>add</code>. This function takes as an input another <code>python.builtin.object</code>, generally constructed as the output of another <strong>kerasR</strong> function. For example, to add a dense layer to our model we do the following:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">50</span>, <span class="dt">input_shape =</span> <span class="dv">13</span>))</code></pre></div>
+<p>We have now added a dense layer with 200 neurons. The first layer must include a specification of the <code>input_shape</code>, giving the dimensionality of the input data. Here we set the number of input variables equal to 13. Next in the model, we add an activation defined by a rectified linear unit to the model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))</code></pre></div>
 <p>Now, we add a dense layer with just a single neuron to serve as the output layer:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">1</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">1</span>))</code></pre></div>
 <p>Once the model is fully defined, we have to compile it before fitting its parameters or using it for prediction. Compiling a model can be done with the method <code>compile</code>, but some optional arguments to it can cause trouble when converting from R types so we provide a custom wrapper <code>keras_compile</code>. At a minimum we need to specify the loss function and the optimizer. The loss can be specified with just a string, but we will pass the output of another <strong>kerasR</strong> function as the optimizer. Here we use the RMSprop optimizer as it generally gives fairly good performance:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">keras_compile</span>(mod,  <span class="dt">loss =</span> <span class="st">'mse'</span>, <span class="dt">optimizer =</span> <span class="kw">RMSprop</span>())</code></pre></div>
 <p>Now we are able to fit the weights in the model from some training data, but we do not yet have any data from which to train! Let’s load some using the wrapper function <code>load_boston_housing</code>. We provide several data loading functions as part of the package, and all return data in the same format. In this case it will be helpful to scale the data matrices:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">boston &lt;-<span class="st"> </span><span class="kw">load_boston_housing</span>()
-X_train &lt;-<span class="st"> </span><span class="kw">scale</span>(boston$X_train)
-Y_train &lt;-<span class="st"> </span>boston$Y_train
-X_test &lt;-<span class="st"> </span><span class="kw">scale</span>(boston$X_test)
-Y_test &lt;-<span class="st"> </span>boston$Y_test</code></pre></div>
+X_train &lt;-<span class="st"> </span><span class="kw">scale</span>(boston<span class="op">$</span>X_train)
+Y_train &lt;-<span class="st"> </span>boston<span class="op">$</span>Y_train
+X_test &lt;-<span class="st"> </span><span class="kw">scale</span>(boston<span class="op">$</span>X_test)
+Y_test &lt;-<span class="st"> </span>boston<span class="op">$</span>Y_test</code></pre></div>
 <p>Now, we call the wrapper <code>keras_fit</code> in order to fit the model from this data. As with the compilation, there is a direct method for doing this but you will likely run into data type conversion problems calling it directly. Instead, we see how easy it is to use the wrapper function (if you run this yourself, you will see that Keras provides very good verbose output for tracking the fitting of models):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">keras_fit</span>(mod, X_train, Y_train,
           <span class="dt">batch_size =</span> <span class="dv">32</span>, <span class="dt">epochs =</span> <span class="dv">200</span>,
@@ -109,41 +109,41 @@ Y_test &lt;-<span class="st"> </span>boston$Y_test</code></pre></div>
 <pre><code>output</code></pre>
 <p>Notice that the model does not do particularly well here, probably due to over-fitting on such as small set.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred &lt;-<span class="st"> </span><span class="kw">keras_predict</span>(mod, <span class="kw">normalize</span>(X_test))
-<span class="kw">sd</span>(<span class="kw">as.numeric</span>(pred) -<span class="st"> </span>Y_test) /<span class="st"> </span><span class="kw">sd</span>(Y_test)</code></pre></div>
+<span class="kw">sd</span>(<span class="kw">as.numeric</span>(pred) <span class="op">-</span><span class="st"> </span>Y_test) <span class="op">/</span><span class="st"> </span><span class="kw">sd</span>(Y_test)</code></pre></div>
 <pre><code>## [1] 0.7692395</code></pre>
 </div>
 <div id="a-larger-example-mnist" class="section level2">
 <h2>A Larger Example (MNIST)</h2>
 <p>To show the power of neural networks we need a larger dataset to make use of. A popular first dataset for applying neural networks is the MNIST Handwriting dataset, consisting of small black and white scans of handwritten numeric digits (0-9). The task is to build a classifier that correctly identifies the numeric value from the scan. We may load this dataset in with the following:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mnist &lt;-<span class="st"> </span><span class="kw">load_mnist</span>()
-X_train &lt;-<span class="st"> </span>mnist$X_train
-Y_train &lt;-<span class="st"> </span>mnist$Y_train
-X_test &lt;-<span class="st"> </span>mnist$X_test
-Y_test &lt;-<span class="st"> </span>mnist$Y_test
+X_train &lt;-<span class="st"> </span>mnist<span class="op">$</span>X_train
+Y_train &lt;-<span class="st"> </span>mnist<span class="op">$</span>Y_train
+X_test &lt;-<span class="st"> </span>mnist<span class="op">$</span>X_test
+Y_test &lt;-<span class="st"> </span>mnist<span class="op">$</span>Y_test
 <span class="kw">dim</span>(X_train)</code></pre></div>
 <pre><code>## [1] 60000    28    28</code></pre>
-<p>Notice that the training data shape is three dimensional (in the language of Keras this is a tensor). The first dimension is the specific sample number, the second is the row of the scan, and the third is the column of the scan. We will use this additional spatial information in the next section, but for now let us flatten the data so that is is just a 2D-Tensor. The values are pixel intensities between 0 and 255, so we will also normalize the values to be between 0 and 1 at the same time:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">array</span>(X_train, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(X_train)[<span class="dv">1</span>], <span class="kw">prod</span>(<span class="kw">dim</span>(X_train)[-<span class="dv">1</span>]))) /<span class="st"> </span><span class="dv">255</span>
-X_test &lt;-<span class="st"> </span><span class="kw">array</span>(X_test, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(X_test)[<span class="dv">1</span>], <span class="kw">prod</span>(<span class="kw">dim</span>(X_test)[-<span class="dv">1</span>]))) /<span class="st"> </span><span class="dv">255</span></code></pre></div>
-<p>Finally, we want to process the response vector y into a different format as well. By default it is encoding in a one-column matrix with each row giving the number represented by the hand written image. We instead would like this to be converted into a 10-column binary matrix, with exactly one 1 in each row indicating which digit is represented. This is similar to the factor contrasts matrix one would construct when using factors in a linear model. In the neural network literature it is call the one-hot representation. We construct it here via the wrapper function <code>to_categorical</code>. Note that we only want to convert the training data to this format; the test data should remain in its original one-column shape.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y_train &lt;-<span class="st"> </span><span class="kw">to_categorical</span>(mnist$Y_train, <span class="dv">10</span>)</code></pre></div>
+<p>Notice that the training data shape is three dimensional (in the language of Keras this is a tensor). The first dimension is the specific sample number, the second is the row of the scan, and the third is the column of the scan. We will use this additional spatial information in the next section, but for now let us flatten the data so that is is just a 2D-Tensor. The values are pixel intensities between 0 and 255, so we will also normalize the values to be between 0 and 1:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X_train &lt;-<span class="st"> </span><span class="kw">array</span>(X_train, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(X_train)[<span class="dv">1</span>], <span class="kw">prod</span>(<span class="kw">dim</span>(X_train)[<span class="op">-</span><span class="dv">1</span>]))) <span class="op">/</span><span class="st"> </span><span class="dv">255</span>
+X_test &lt;-<span class="st"> </span><span class="kw">array</span>(X_test, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(X_test)[<span class="dv">1</span>], <span class="kw">prod</span>(<span class="kw">dim</span>(X_test)[<span class="op">-</span><span class="dv">1</span>]))) <span class="op">/</span><span class="st"> </span><span class="dv">255</span></code></pre></div>
+<p>Finally, we want to process the response vector y into a different format as well. By default it is encoded in a one-column matrix with each row giving the number represented by the hand written image. We instead would like this to be converted into a 10-column binary matrix, with exactly one 1 in each row indicating which digit is represented. This is similar to the factor contrasts matrix one would construct when using factors in a linear model. In the neural network literature it is call the one-hot representation. We construct it here via the wrapper function <code>to_categorical</code>. Note that we only want to convert the training data to this format; the test data should remain in its original one-column shape.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y_train &lt;-<span class="st"> </span><span class="kw">to_categorical</span>(mnist<span class="op">$</span>Y_train, <span class="dv">10</span>)</code></pre></div>
 <p>With the data in hand, we are now ready to construct a neural network. We will create three blocks of identical Dense layers, all having 512 nodes, a leaky rectified linear unit, and drop out. These will be followed on the top output layer of 10 nodes and a final softmax activation. These are fairly well-known choices for a simple dense neural network and allow us to show off many of the possibilities within the <strong>kerasR</strong> interface:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod &lt;-<span class="st"> </span><span class="kw">Sequential</span>()
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">512</span>, <span class="dt">input_shape =</span> <span class="kw">dim</span>(X_train)[<span class="dv">2</span>]))
-mod$<span class="kw">add</span>(<span class="kw">LeakyReLU</span>())
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">512</span>, <span class="dt">input_shape =</span> <span class="kw">dim</span>(X_train)[<span class="dv">2</span>]))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">LeakyReLU</span>())
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">512</span>))
-mod$<span class="kw">add</span>(<span class="kw">LeakyReLU</span>())
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">512</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">LeakyReLU</span>())
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">512</span>))
-mod$<span class="kw">add</span>(<span class="kw">LeakyReLU</span>())
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dt">units =</span> <span class="dv">512</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">LeakyReLU</span>())
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">10</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;softmax&quot;</span>))</code></pre></div>
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">10</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;softmax&quot;</span>))</code></pre></div>
 <p>We then compile the model with the “categorical_crossentropy” loss and fit it on the training data:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">keras_compile</span>(mod,  <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>, <span class="dt">optimizer =</span> <span class="kw">RMSprop</span>())
 <span class="kw">keras_fit</span>(mod, X_train, Y_train, <span class="dt">batch_size =</span> <span class="dv">32</span>, <span class="dt">epochs =</span> <span class="dv">5</span>, <span class="dt">verbose =</span> <span class="dv">1</span>,
@@ -151,7 +151,7 @@ mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="
 <p>Now that the model is trained, we could use the function <code>keras_predict</code> once again, however this would give us an output matrix with 10 columns. It is not too much work to turn this into predicted classes, but <strong>kerasR</strong> provides <code>keras_predict_classes</code> that extracts the predicted classes directly. Using this we are able to evaluate the data on the test set.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y_test_hat &lt;-<span class="st"> </span><span class="kw">keras_predict_classes</span>(mod, X_test)
 <span class="kw">table</span>(Y_test, Y_test_hat)
-<span class="kw">mean</span>(Y_test ==<span class="st"> </span>Y_test_hat)</code></pre></div>
+<span class="kw">mean</span>(Y_test <span class="op">==</span><span class="st"> </span>Y_test_hat)</code></pre></div>
 <pre><code>##       Y_test_hat
 ## Y_test         0    1    2    3    4    5    6    7    8    9
 ##           0  952    1    5    0    1   11    4    1    3    2
@@ -172,28 +172,28 @@ mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="
 <p>To begin, we load the MNIST dataset in once again, but this time increase the number of dimension in the <code>X_train</code> tensor by one rather than reducing it by one. These images are black and white and one way to think about this additional dimension is that it represents a “gray” channel.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mnist &lt;-<span class="st"> </span><span class="kw">load_mnist</span>()
 
-X_train &lt;-<span class="st"> </span><span class="kw">array</span>(mnist$X_train, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(mnist$X_train), <span class="dv">1</span>)) /<span class="st"> </span><span class="dv">255</span>
-Y_train &lt;-<span class="st"> </span><span class="kw">to_categorical</span>(mnist$Y_train, <span class="dv">10</span>)
-X_test &lt;-<span class="st"> </span><span class="kw">array</span>(mnist$X_test, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(mnist$X_test), <span class="dv">1</span>)) /<span class="st"> </span><span class="dv">255</span>
-Y_test &lt;-<span class="st"> </span>mnist$Y_test</code></pre></div>
+X_train &lt;-<span class="st"> </span><span class="kw">array</span>(mnist<span class="op">$</span>X_train, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(mnist<span class="op">$</span>X_train), <span class="dv">1</span>)) <span class="op">/</span><span class="st"> </span><span class="dv">255</span>
+Y_train &lt;-<span class="st"> </span><span class="kw">to_categorical</span>(mnist<span class="op">$</span>Y_train, <span class="dv">10</span>)
+X_test &lt;-<span class="st"> </span><span class="kw">array</span>(mnist<span class="op">$</span>X_test, <span class="dt">dim =</span> <span class="kw">c</span>(<span class="kw">dim</span>(mnist<span class="op">$</span>X_test), <span class="dv">1</span>)) <span class="op">/</span><span class="st"> </span><span class="dv">255</span>
+Y_test &lt;-<span class="st"> </span>mnist<span class="op">$</span>Y_test</code></pre></div>
 <p>Now we build a CNN model by using the convolution specific <code>Conv2D</code> and <code>MaxPooling</code> layers. The <code>flatten</code> layer converts its inputs into a 2-dimensional tensor so that we can follow up with Dense layers on the top. Using deep convolution layers followed by Dense layers at the top of the network are a common design pattern in neural networks.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod &lt;-<span class="st"> </span><span class="kw">Sequential</span>()
 
-mod$<span class="kw">add</span>(<span class="kw">Conv2D</span>(<span class="dt">filters =</span> <span class="dv">32</span>, <span class="dt">kernel_size =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>),
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Conv2D</span>(<span class="dt">filters =</span> <span class="dv">32</span>, <span class="dt">kernel_size =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>),
                <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))
-mod$<span class="kw">add</span>(<span class="kw">Conv2D</span>(<span class="dt">filters =</span> <span class="dv">32</span>, <span class="dt">kernel_size =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>),
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Conv2D</span>(<span class="dt">filters =</span> <span class="dv">32</span>, <span class="dt">kernel_size =</span> <span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">3</span>),
                <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))
-mod$<span class="kw">add</span>(<span class="kw">MaxPooling2D</span>(<span class="dt">pool_size=</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)))
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">MaxPooling2D</span>(<span class="dt">pool_size=</span><span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Flatten</span>())
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">128</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">10</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;softmax&quot;</span>))</code></pre></div>
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Flatten</span>())
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">128</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;relu&quot;</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">10</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">&quot;softmax&quot;</span>))</code></pre></div>
 <p>Once the model has been created, we compile it and fit it to the data using the exact same functions as previously used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">keras_compile</span>(mod,  <span class="dt">loss =</span> <span class="st">'categorical_crossentropy'</span>, <span class="dt">optimizer =</span> <span class="kw">RMSprop</span>())
 <span class="kw">keras_fit</span>(mod, X_train, Y_train, <span class="dt">batch_size =</span> <span class="dv">32</span>, <span class="dt">epochs =</span> <span class="dv">5</span>, <span class="dt">verbose =</span> <span class="dv">1</span>,
@@ -201,7 +201,7 @@ mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="
 <p>And we see that this new data has improved the overall classification rate:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y_test_hat &lt;-<span class="st"> </span><span class="kw">keras_predict_classes</span>(mod, X_test)
 <span class="kw">table</span>(Y_test, Y_test_hat)
-<span class="kw">mean</span>(Y_test ==<span class="st"> </span>Y_test_hat)</code></pre></div>
+<span class="kw">mean</span>(Y_test <span class="op">==</span><span class="st"> </span>Y_test_hat)</code></pre></div>
 <pre><code>##       Y_test_hat
 ## Y_test    0    1    2    3    4    5    6    7    8    9
 ##           0  970    0    0    0    2    0    5    0    1    2
@@ -222,24 +222,24 @@ mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="
 <p>As a final example, we will demonstrate the usage of recurrent neural networks in Keras. RNNs are able to “hold their state” in between inputs, and therefore are useful for modeling a sequence of data such as occurs with a time series or with a collection words in a text. Here we will use them to predict whether a movie review from IMDB is generally positive (1) or negative (0). We’ll load the data in using a similar command as with the Boston Housing Data and MNIST, but here the load functions has a few options that we can set. Once the data is loaded, we’ll use the wrapper <code>pad_sequences</code> to make sure every review has exactly 100 words (those with fewer get padded with a special “word” coded as zeros). Because there are only two classes, we can keep <code>Y_train</code> in its default format.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">imdb &lt;-<span class="st"> </span><span class="kw">load_imdb</span>(<span class="dt">num_words =</span> <span class="dv">500</span>, <span class="dt">maxlen =</span> <span class="dv">100</span>)
 
-X_train &lt;-<span class="st"> </span><span class="kw">pad_sequences</span>(imdb$X_train[<span class="dv">1</span>:<span class="dv">4000</span>], <span class="dt">maxlen =</span> <span class="dv">100</span>)
-Y_train &lt;-<span class="st"> </span>imdb$Y_train[<span class="dv">1</span>:<span class="dv">4000</span>]
-X_test &lt;-<span class="st"> </span><span class="kw">pad_sequences</span>(imdb$X_train[<span class="dv">4001</span>:<span class="dv">5736</span>], <span class="dt">maxlen =</span> <span class="dv">100</span>)
-Y_test &lt;-<span class="st"> </span>imdb$Y_train[<span class="dv">4001</span>:<span class="dv">5736</span>]</code></pre></div>
+X_train &lt;-<span class="st"> </span><span class="kw">pad_sequences</span>(imdb<span class="op">$</span>X_train[<span class="dv">1</span><span class="op">:</span><span class="dv">4000</span>], <span class="dt">maxlen =</span> <span class="dv">100</span>)
+Y_train &lt;-<span class="st"> </span>imdb<span class="op">$</span>Y_train[<span class="dv">1</span><span class="op">:</span><span class="dv">4000</span>]
+X_test &lt;-<span class="st"> </span><span class="kw">pad_sequences</span>(imdb<span class="op">$</span>X_train[<span class="dv">4001</span><span class="op">:</span><span class="dv">5736</span>], <span class="dt">maxlen =</span> <span class="dv">100</span>)
+Y_test &lt;-<span class="st"> </span>imdb<span class="op">$</span>Y_train[<span class="dv">4001</span><span class="op">:</span><span class="dv">5736</span>]</code></pre></div>
 <p>Notice that there is not an explicit test set so we made that manually by using only the first 4000 document for training. Now we’ll build a model that includes an <code>Embedding</code> layer. This maps each word index in <code>X_train</code> into a 500 dimensional space. If you are familiar with the word2vec or GloVe algorithms, these are just particular, well-known examples of word embeddings. Following the embedding we will flatten the output and add a Dense layer before predicting the output. As we only have a single output, we’ll use a sigmoid activation rather than a softmax.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod &lt;-<span class="st"> </span><span class="kw">Sequential</span>()
 
-mod$<span class="kw">add</span>(<span class="kw">Embedding</span>(<span class="dv">500</span>, <span class="dv">32</span>, <span class="dt">input_length =</span> <span class="dv">100</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">100</span>)))
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Embedding</span>(<span class="dv">500</span>, <span class="dv">32</span>, <span class="dt">input_length =</span> <span class="dv">100</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">100</span>)))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Flatten</span>())
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Flatten</span>())
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">256</span>))
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'relu'</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">256</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'relu'</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">1</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'sigmoid'</span>))</code></pre></div>
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">1</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'sigmoid'</span>))</code></pre></div>
 <p>We use almost the exact same commands to compile and fit the model, but here modify the loss to be “binary_crossentropy” because we have only one column in the output. We also found that the learning rate needed to be made slightly smaller as to not overfit the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">keras_compile</span>(mod,  <span class="dt">loss =</span> <span class="st">'binary_crossentropy'</span>, <span class="dt">optimizer =</span> <span class="kw">RMSprop</span>(<span class="dt">lr =</span> <span class="fl">0.00025</span>))
 <span class="kw">keras_fit</span>(mod, X_train, Y_train, <span class="dt">batch_size =</span> <span class="dv">32</span>, <span class="dt">epochs =</span> <span class="dv">10</span>, <span class="dt">verbose =</span> <span class="dv">1</span>,
@@ -247,7 +247,7 @@ mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="
 <p>Now we predict the raw values and round to the nearest integer, which should be either 0 or 1, and compare to the actual test set.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y_test_hat &lt;-<span class="st"> </span><span class="kw">keras_predict</span>(mod, X_test)
 <span class="kw">table</span>(Y_test, <span class="kw">round</span>(Y_test_hat))
-<span class="kw">mean</span>(Y_test ==<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">round</span>(Y_test_hat)))</code></pre></div>
+<span class="kw">mean</span>(Y_test <span class="op">==</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">round</span>(Y_test_hat)))</code></pre></div>
 <pre><code>## Y_test   0   1
 ##     0 609 189
 ##     1 175 763
@@ -255,24 +255,24 @@ mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="
 <p>This gives a classification rate of 79%. We can try to improve that by including a Long-Short Term Memory Unit (LSTM), an explicit RNN layer, in the model. This is easy to program, but it makes the model learn about 5-10 times slower, at least if you are not running on a dedicated GPU.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mod &lt;-<span class="st"> </span><span class="kw">Sequential</span>()
 
-mod$<span class="kw">add</span>(<span class="kw">Embedding</span>(<span class="dv">500</span>, <span class="dv">32</span>, <span class="dt">input_length =</span> <span class="dv">100</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">100</span>)))
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Embedding</span>(<span class="dv">500</span>, <span class="dv">32</span>, <span class="dt">input_length =</span> <span class="dv">100</span>, <span class="dt">input_shape =</span> <span class="kw">c</span>(<span class="dv">100</span>)))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">LSTM</span>(<span class="dv">32</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">LSTM</span>(<span class="dv">32</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">256</span>))
-mod$<span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'relu'</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">256</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dropout</span>(<span class="fl">0.25</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'relu'</span>))
 
-mod$<span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">1</span>))
-mod$<span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'sigmoid'</span>))</code></pre></div>
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Dense</span>(<span class="dv">1</span>))
+mod<span class="op">$</span><span class="kw">add</span>(<span class="kw">Activation</span>(<span class="st">'sigmoid'</span>))</code></pre></div>
 <p>Which we compile and fit as before:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">keras_compile</span>(mod,  <span class="dt">loss =</span> <span class="st">'binary_crossentropy'</span>, <span class="dt">optimizer =</span> <span class="kw">RMSprop</span>(<span class="dt">lr =</span> <span class="fl">0.00025</span>))
 <span class="kw">keras_fit</span>(mod, X_train, Y_train, <span class="dt">batch_size =</span> <span class="dv">32</span>, <span class="dt">epochs =</span> <span class="dv">10</span>, <span class="dt">verbose =</span> <span class="dv">1</span>,
           <span class="dt">validation_split =</span> <span class="fl">0.1</span>)</code></pre></div>
 <p>The test results do offer an improvement:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y_test_hat &lt;-<span class="st"> </span><span class="kw">keras_predict</span>(mod, X_test)
-<span class="kw">mean</span>(Y_test ==<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">round</span>(Y_test_hat)))</code></pre></div>
+<span class="kw">mean</span>(Y_test <span class="op">==</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">round</span>(Y_test_hat)))</code></pre></div>
 <pre><code>## Y_test   0   1
 ##      0 579 219
 ##      1  84 854
@@ -305,11 +305,11 @@ mod &lt;-<span class="st"> </span><span class="kw">keras_model_to_json</span>(<s
 x &lt;-<span class="st"> </span><span class="kw">img_to_array</span>(img)
 x &lt;-<span class="st"> </span><span class="kw">expand_dims</span>(x, <span class="dt">axis =</span> <span class="dv">0</span>)</code></pre></div>
 <p>We specifically ask that the image be converted into a 299 by 299 image, the size of the images used to train VGG19 from imagenet. The photo must then also undergo the exact same preprocessing used on images that trained InceptionV3, which in this case just divides all the pixels by 255</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span>x /<span class="st"> </span><span class="dv">255</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span>x <span class="op">/</span><span class="st"> </span><span class="dv">255</span></code></pre></div>
 <p>We can get the raw prediction categories with</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pred &lt;-<span class="st"> </span><span class="kw">keras_predict</span>(inception, x)</code></pre></div>
 <p>But even more directly, we can take this output and get category names:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">&gt;<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">decode_predictions</span>(pred, <span class="dt">model =</span> <span class="st">&quot;InceptionV3&quot;</span>, <span class="dt">top =</span> <span class="dv">3</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">&gt;</span><span class="st"> </span><span class="kw">unlist</span>(<span class="kw">decode_predictions</span>(pred, <span class="dt">model =</span> <span class="st">&quot;InceptionV3&quot;</span>, <span class="dt">top =</span> <span class="dv">3</span>))
 [<span class="dv">1</span>] <span class="st">&quot;n01871265&quot;</span>         <span class="st">&quot;tusker&quot;</span>            <span class="st">&quot;0.546035408973694&quot;</span>
 [<span class="dv">4</span>] <span class="st">&quot;n02504013&quot;</span>         <span class="st">&quot;Indian_elephant&quot;</span>   <span class="st">&quot;0.247862368822098&quot;</span>
 [<span class="dv">7</span>] <span class="st">&quot;n02504458&quot;</span>         <span class="st">&quot;African_elephant&quot;</span>  <span class="st">&quot;0.143739387392998&quot;</span></code></pre></div>

@@ -16,8 +16,8 @@ ModelCheckpoint(filepath, monitor = "val_loss", verbose = 0,
 \item{verbose}{verbosity mode, 0 or 1.}
 
 \item{save_best_only}{if save_best_only=True, the latest
-best model according to the quantity monitored will
-not be overwritten.}
+best model according to the quantity monitored
+will not be overwritten.}
 
 \item{save_weights_only}{if True, then only the model's weights will
 be saved (model.save_weights(filepath)), else
@@ -26,19 +26,46 @@ the full model is saved (model.save(filepath)).}
 \item{mode}{one of {auto, min, max}. If save_best_only is
 True, the decision to overwrite the current
 save file is made based on either the
-maximization or the minimization of the monitored
-quantity. For val_acc, this should be max, for
-val_loss this should be min, etc. In auto mode,
-the direction is automatically inferred from the
-name of the monitored quantity.}
+maximization or the minimization of the
+monitored quantity. For val_acc, this should
+be max, for val_loss this should be min, etc.
+the direction is automatically inferred from
+the name of the monitored quantity.}
 
 \item{period}{Interval (number of epochs) between checkpoints.}
 }
 \description{
 Save the model after every epoch.
 }
+\examples{
+if(keras_available()) {
+  X_train <- matrix(rnorm(100 * 10), nrow = 100)
+  Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
+
+  mod <- Sequential()
+  mod$add(Dense(units = 50, input_shape = dim(X_train)[2]))
+  mod$add(Activation("relu"))
+  mod$add(Dense(units = 3))
+  mod$add(Activation("softmax"))
+  keras_compile(mod,  loss = 'categorical_crossentropy', optimizer = RMSprop())
+
+  callbacks <- list(CSVLogger(tempfile()),
+                    EarlyStopping(),
+                    ReduceLROnPlateau(),
+                    TensorBoard(tempfile()))
+
+  keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5,
+            verbose = 0, callbacks = callbacks, validation_split = 0.2)
+}
+}
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other callbacks: \code{\link{CSVLogger}},
+  \code{\link{EarlyStopping}},
+  \code{\link{ReduceLROnPlateau}},
+  \code{\link{TensorBoard}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

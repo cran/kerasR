@@ -9,48 +9,66 @@ Embedding(input_dim, output_dim, embeddings_initializer = "uniform",
   mask_zero = FALSE, input_length = NULL, input_shape = NULL)
 }
 \arguments{
-\item{input_dim}{int > 0. Size of the vocabulary, ie. 1 + maximum integer
-index occurring in the input data.}
+\item{input_dim}{int > 0. Size of the vocabulary,
+ie. 1 + maximum integer index occurring in
+the input data.}
 
 \item{output_dim}{int >= 0. Dimension of the dense embedding.}
 
 \item{embeddings_initializer}{Initializer for the embeddings matrix}
 
-\item{embeddings_regularizer}{Regularizer function applied to the embeddings matrix}
+\item{embeddings_regularizer}{Regularizer function applied to the
+embeddings matrix}
 
-\item{embeddings_constraint}{Constraint function applied to the embeddings matrix}
+\item{embeddings_constraint}{Constraint function applied to the
+embeddings matrix}
 
-\item{mask_zero}{Whether or not the input value 0 is a special "padding"
-value that should be masked out.}
+\item{mask_zero}{Whether or not the input value 0 is a
+special "padding" value that should be
+masked out.}
 
-\item{input_length}{Length of input sequences, when it is constant.}
+\item{input_length}{Length of input sequences, when it is
+constant.}
 
-\item{input_shape}{only need when first layer of a model; sets the input shape
-of the data}
+\item{input_shape}{only need when first layer of a model;
+sets the input shape of the data}
 }
 \description{
 Turns positive integers (indexes) into dense vectors of fixed size.
 }
 \examples{
-if (run_examples()) {
-X_train <- matrix(sample(0:19, 100 * 100, TRUE), ncol = 100)
-Y_train <- rnorm(100)
-
-mod <- Sequential()
-mod$add(Embedding(input_dim = 20, output_dim = 10,
-                  input_length = 100))
-mod$add(Dropout(0.5))
-
-mod$add(GRU(16))
-mod$add(Dense(1))
-mod$add(Activation("sigmoid"))
-
-keras_compile(mod, loss = "mse", optimizer = RMSprop())
-keras_fit(mod, X_train, Y_train, epochs = 3, verbose = 0)
+if(keras_available()) {
+  X_train <- matrix(sample(0:19, 100 * 100, TRUE), ncol = 100)
+  Y_train <- rnorm(100)
+  
+  mod <- Sequential()
+  mod$add(Embedding(input_dim = 20, output_dim = 10,
+                    input_length = 100))
+  mod$add(Dropout(0.5))
+  
+  mod$add(GRU(16))
+  mod$add(Dense(1))
+  mod$add(Activation("sigmoid"))
+  
+  keras_compile(mod, loss = "mse", optimizer = RMSprop())
+  keras_fit(mod, X_train, Y_train, epochs = 3, verbose = 0)
 }
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other layers: \code{\link{Activation}},
+  \code{\link{ActivityRegularization}},
+  \code{\link{AdvancedActivation}},
+  \code{\link{BatchNormalization}}, \code{\link{Conv}},
+  \code{\link{Dense}}, \code{\link{Dropout}},
+  \code{\link{Flatten}}, \code{\link{GaussianNoise}},
+  \code{\link{LayerWrapper}},
+  \code{\link{LocallyConnected}}, \code{\link{Masking}},
+  \code{\link{MaxPooling}}, \code{\link{Permute}},
+  \code{\link{RNN}}, \code{\link{RepeatVector}},
+  \code{\link{Reshape}}, \code{\link{Sequential}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

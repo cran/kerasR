@@ -8,12 +8,12 @@ TensorBoard(log_dir = "./logs", histogram_freq = 0, write_graph = TRUE,
   write_images = FALSE)
 }
 \arguments{
-\item{log_dir}{the path of the directory where to save the log files
-to be parsed by Tensorboard.}
+\item{log_dir}{the path of the directory where to save the
+log files to be parsed by Tensorboard.}
 
-\item{histogram_freq}{frequency (in epochs) at which to compute activation
-histograms for the layers of the model. If set to
-0, histograms won't be computed.}
+\item{histogram_freq}{frequency (in epochs) at which to compute
+activation histograms for the layers of the model.
+If set to 0, histograms won't be computed.}
 
 \item{write_graph}{whether to visualize the graph in Tensorboard. The
 log file can become quite large when write_graph
@@ -27,8 +27,35 @@ This callback writes a log for TensorBoard, which allows you to visualize
 dynamic graphs of your training and test metrics, as well as activation
 histograms for the different layers in your model.
 }
+\examples{
+if(keras_available()) {
+  X_train <- matrix(rnorm(100 * 10), nrow = 100)
+  Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
+
+  mod <- Sequential()
+  mod$add(Dense(units = 50, input_shape = dim(X_train)[2]))
+  mod$add(Activation("relu"))
+  mod$add(Dense(units = 3))
+  mod$add(Activation("softmax"))
+  keras_compile(mod,  loss = 'categorical_crossentropy', optimizer = RMSprop())
+
+  callbacks <- list(CSVLogger(tempfile()),
+                    EarlyStopping(),
+                    ReduceLROnPlateau(),
+                    TensorBoard(tempfile()))
+
+  keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5,
+            verbose = 0, callbacks = callbacks, validation_split = 0.2)
+}
+}
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other callbacks: \code{\link{CSVLogger}},
+  \code{\link{EarlyStopping}},
+  \code{\link{ModelCheckpoint}},
+  \code{\link{ReduceLROnPlateau}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

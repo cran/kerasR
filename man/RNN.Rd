@@ -32,7 +32,7 @@ LSTM(units, activation = "tanh", recurrent_activation = "hard_sigmoid",
   recurrent_regularizer = NULL, bias_regularizer = NULL,
   activity_regularizer = NULL, kernel_constraint = NULL,
   recurrent_constraint = NULL, bias_constraint = NULL, dropout = 0,
-  recurrent_dropout = 0, input_shape = NULL)
+  recurrent_dropout = 0, return_sequences = FALSE, input_shape = NULL)
 }
 \arguments{
 \item{units}{Positive integer, dimensionality of the output space.}
@@ -41,63 +41,88 @@ LSTM(units, activation = "tanh", recurrent_activation = "hard_sigmoid",
 
 \item{use_bias}{Boolean, whether the layer uses a bias vector.}
 
-\item{kernel_initializer}{Initializer for the kernel weights matrix, used for
-the linear transformation of the inputs.}
+\item{kernel_initializer}{Initializer for the kernel weights matrix,
+used for the linear transformation of the inputs.}
 
-\item{recurrent_initializer}{Initializer for the recurrent_kernel weights matrix,
-used for the linear transformation of the recurrent state.}
+\item{recurrent_initializer}{Initializer for the recurrent_kernel
+weights matrix, used for
+the linear transformation of the recurrentstate.}
 
 \item{bias_initializer}{Initializer for the bias vector}
 
-\item{kernel_regularizer}{Regularizer function applied to the kernel weights matrix}
+\item{kernel_regularizer}{Regularizer function applied to the kernel
+weights matrix}
 
-\item{recurrent_regularizer}{Regularizer function applied to the recurrent_kernel weights matrix}
+\item{recurrent_regularizer}{Regularizer function applied to the
+recurrent_kernel weights matrix}
 
 \item{bias_regularizer}{Regularizer function applied to the bias vector}
 
-\item{activity_regularizer}{Regularizer function applied to the output of the layer (its "activation")}
+\item{activity_regularizer}{Regularizer function applied to the output
+of the layer (its "activation")}
 
-\item{kernel_constraint}{Constraint function applied to the kernel weights matrix}
+\item{kernel_constraint}{Constraint function applied to the kernel
+weights matrix}
 
-\item{recurrent_constraint}{Constraint function applied to the recurrent_kernel weights matrix}
+\item{recurrent_constraint}{Constraint function applied to the
+recurrent_kernel weights matrix}
 
 \item{bias_constraint}{Constraint function applied to the bias vector}
 
-\item{dropout}{Float between 0 and 1. Fraction of the units to drop for the linear transformation of the inputs.}
+\item{dropout}{Float between 0 and 1. Fraction of the units to drop for
+the linear transformation of the inputs.}
 
-\item{recurrent_dropout}{Float between 0 and 1. Fraction of the units to drop for the linear transformation of the recurrent state.}
+\item{recurrent_dropout}{Float between 0 and 1. Fraction of the units
+to drop for the linear transformation of the recurrent state.}
 
-\item{input_shape}{only need when first layer of a model; sets the input shape
-of the data}
+\item{input_shape}{only need when first layer of a model;
+sets the input shape of the data}
 
-\item{recurrent_activation}{Activation function to use for the recurrent step}
+\item{recurrent_activation}{Activation function to use for the recurrent
+step}
 
-\item{unit_forget_bias}{Boolean. If True, add 1 to the bias of the forget gate
-at initialization.}
+\item{unit_forget_bias}{Boolean. If True, add 1 to the bias of the
+forget gate at initialization.}
+
+\item{return_sequences}{Boolean. Whether to return the last output in
+the output sequence, or the full sequence.}
 }
 \description{
 Recurrent neural network layers
 }
 \examples{
-if (run_examples()) {
-X_train <- matrix(sample(0:19, 100 * 100, TRUE), ncol = 100)
-Y_train <- rnorm(100)
-
-mod <- Sequential()
-mod$add(Embedding(input_dim = 20, output_dim = 10,
-                  input_length = 100))
-mod$add(Dropout(0.5))
-
-mod$add(LSTM(16))
-mod$add(Dense(1))
-mod$add(Activation("sigmoid"))
-
-keras_compile(mod, loss = "mse", optimizer = RMSprop())
-keras_fit(mod, X_train, Y_train, epochs = 3, verbose = 0)
+if(keras_available()) {
+  X_train <- matrix(sample(0:19, 100 * 100, TRUE), ncol = 100)
+  Y_train <- rnorm(100)
+  
+  mod <- Sequential()
+  mod$add(Embedding(input_dim = 20, output_dim = 10,
+                    input_length = 100))
+  mod$add(Dropout(0.5))
+  
+  mod$add(LSTM(16))
+  mod$add(Dense(1))
+  mod$add(Activation("sigmoid"))
+  
+  keras_compile(mod, loss = "mse", optimizer = RMSprop())
+  keras_fit(mod, X_train, Y_train, epochs = 3, verbose = 0)
 }
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other layers: \code{\link{Activation}},
+  \code{\link{ActivityRegularization}},
+  \code{\link{AdvancedActivation}},
+  \code{\link{BatchNormalization}}, \code{\link{Conv}},
+  \code{\link{Dense}}, \code{\link{Dropout}},
+  \code{\link{Embedding}}, \code{\link{Flatten}},
+  \code{\link{GaussianNoise}}, \code{\link{LayerWrapper}},
+  \code{\link{LocallyConnected}}, \code{\link{Masking}},
+  \code{\link{MaxPooling}}, \code{\link{Permute}},
+  \code{\link{RepeatVector}}, \code{\link{Reshape}},
+  \code{\link{Sequential}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

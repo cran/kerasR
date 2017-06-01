@@ -9,14 +9,27 @@ RepeatVector(n, input_shape = NULL)
 \arguments{
 \item{n}{integer, repetition factor.}
 
-\item{input_shape}{only need when first layer of a model; sets the input shape
-of the data}
+\item{input_shape}{only need when first layer of a model;
+sets the input shape of the data}
 }
 \description{
 Repeats the input n times.
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other layers: \code{\link{Activation}},
+  \code{\link{ActivityRegularization}},
+  \code{\link{AdvancedActivation}},
+  \code{\link{BatchNormalization}}, \code{\link{Conv}},
+  \code{\link{Dense}}, \code{\link{Dropout}},
+  \code{\link{Embedding}}, \code{\link{Flatten}},
+  \code{\link{GaussianNoise}}, \code{\link{LayerWrapper}},
+  \code{\link{LocallyConnected}}, \code{\link{Masking}},
+  \code{\link{MaxPooling}}, \code{\link{Permute}},
+  \code{\link{RNN}}, \code{\link{Reshape}},
+  \code{\link{Sequential}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

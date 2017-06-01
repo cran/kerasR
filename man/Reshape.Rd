@@ -10,14 +10,27 @@ Reshape(target_shape, input_shape = NULL)
 \item{target_shape}{target shape. Tuple of integers, does not include
 the samples dimension (batch size).}
 
-\item{input_shape}{only need when first layer of a model; sets the input shape
-of the data}
+\item{input_shape}{only need when first layer of a model;
+sets the input shape of the data}
 }
 \description{
 Reshapes an output to a certain shape.
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other layers: \code{\link{Activation}},
+  \code{\link{ActivityRegularization}},
+  \code{\link{AdvancedActivation}},
+  \code{\link{BatchNormalization}}, \code{\link{Conv}},
+  \code{\link{Dense}}, \code{\link{Dropout}},
+  \code{\link{Embedding}}, \code{\link{Flatten}},
+  \code{\link{GaussianNoise}}, \code{\link{LayerWrapper}},
+  \code{\link{LocallyConnected}}, \code{\link{Masking}},
+  \code{\link{MaxPooling}}, \code{\link{Permute}},
+  \code{\link{RNN}}, \code{\link{RepeatVector}},
+  \code{\link{Sequential}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

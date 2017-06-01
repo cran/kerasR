@@ -10,13 +10,18 @@ pad_sequences(sequences, maxlen = NULL, dtype = "int32", padding = "pre",
 \arguments{
 \item{sequences}{vector of lists of int or float.}
 
-\item{maxlen}{None or int. Maximum sequence length, longer sequences are truncated and shorter sequences are padded with zeros at the end.}
+\item{maxlen}{None or int. Maximum sequence length, longer sequences
+are truncated and shorter sequences are padded with
+zeros at the end.}
 
 \item{dtype}{datatype of the Numpy array returned.}
 
-\item{padding}{'pre' or 'post', pad either before or after each sequence.}
+\item{padding}{'pre' or 'post', pad either before or after each
+sequence.}
 
-\item{truncating}{'pre' or 'post', remove values from sequences larger than maxlen either in the beginning or in the end of the sequence}
+\item{truncating}{'pre' or 'post', remove values from sequences larger
+than maxlen either in the beginning or in the end of
+the sequence}
 
 \item{value}{float, value to pad the sequences to the desired value.}
 }
@@ -31,6 +36,12 @@ truncation happens is determined by padding or truncating, respectively.
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other preprocessing: \code{\link{Tokenizer}},
+  \code{\link{expand_dims}}, \code{\link{img_to_array}},
+  \code{\link{load_img}}, \code{\link{one_hot}},
+  \code{\link{text_to_word_sequence}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

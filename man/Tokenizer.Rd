@@ -9,21 +9,29 @@ Tokenizer(num_words = NULL,
   split = " ")
 }
 \arguments{
-\item{num_words}{integer. None or int. Maximum number of words to work with.}
+\item{num_words}{integer. None or int. Maximum number of words to
+work with.}
 
-\item{filters}{vector (or concatenation) of characters to filter out, such as punctuation.}
+\item{filters}{vector (or concatenation) of characters to filter
+out, such as punctuation.}
 
 \item{lower}{boolean. Whether to set the text to lowercase.}
 
 \item{split}{string. Separator for word splitting.}
 }
 \description{
-Returns an object for vectorizing texts, or/and turning texts into sequences
-(=list of word indexes, where the word of rank i in the dataset (starting at 1)
-has index i).
+Returns an object for vectorizing texts, or/and turning texts into
+sequences (=list of word indexes, where the word of rank i in the
+dataset (starting at 1) has index i).
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other preprocessing: \code{\link{expand_dims}},
+  \code{\link{img_to_array}}, \code{\link{load_img}},
+  \code{\link{one_hot}}, \code{\link{pad_sequences}},
+  \code{\link{text_to_word_sequence}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

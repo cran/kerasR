@@ -52,13 +52,16 @@ he_uniform(seed = NULL)
 
 \item{mean}{average of the Normal distribution to sample from}
 
-\item{stddev}{standard deviation of the Normal distribution to sample from}
+\item{stddev}{standard deviation of the Normal distribution to
+sample from}
 
 \item{seed}{Integer. Used to seed the random generator.}
 
-\item{minval}{Lower bound of the range of random values to generate.}
+\item{minval}{Lower bound of the range of random values to
+generate.}
 
-\item{maxval}{Upper bound of the range of random values to generate.}
+\item{maxval}{Upper bound of the range of random values to
+generate.}
 
 \item{scale}{Scaling factor (positive float).}
 
@@ -66,39 +69,40 @@ he_uniform(seed = NULL)
 
 \item{distribution}{distribution to use. One of 'normal' or 'uniform'}
 
-\item{gain}{Multiplicative factor to apply to the orthogonal matrix}
+\item{gain}{Multiplicative factor to apply to the orthogonal
+matrix}
 }
 \description{
 These functions are used to set the initial weights and biases in
 a keras model.
 }
 \examples{
-if (run_examples()) {
-X_train <- matrix(rnorm(100 * 10), nrow = 100)
-Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
-
-mod <- Sequential()
-mod$add(Dense(units = 50, input_shape = dim(X_train)[2]))
-mod$add(Activation("relu"))
-mod$add(Dense(units = 3, kernel_initializer = Zeros(),
-                         bias_initializer = Ones()))
-mod$add(Dense(units = 3, kernel_initializer = Constant(),
-                         bias_initializer = RandomNormal()))
-mod$add(Dense(units = 3, kernel_initializer = RandomUniform(),
-                         bias_initializer = TruncatedNormal()))
-mod$add(Dense(units = 3, kernel_initializer = Orthogonal(),
-                         bias_initializer = VarianceScaling()))
-mod$add(Dense(units = 3, kernel_initializer = Identity(),
-                         bias_initializer = lecun_uniform()))
-mod$add(Dense(units = 3, kernel_initializer = glorot_normal(),
-                         bias_initializer = glorot_uniform()))
-mod$add(Dense(units = 3, kernel_initializer = he_normal(),
-                         bias_initializer = he_uniform()))
-mod$add(Activation("softmax"))
-keras_compile(mod,  loss = 'categorical_crossentropy', optimizer = RMSprop())
-
-keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5, verbose = 0)
-
+if(keras_available()) {
+  X_train <- matrix(rnorm(100 * 10), nrow = 100)
+  Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
+  
+  mod <- Sequential()
+  mod$add(Dense(units = 50, input_shape = dim(X_train)[2]))
+  mod$add(Activation("relu"))
+  mod$add(Dense(units = 3, kernel_initializer = Zeros(),
+                bias_initializer = Ones()))
+  mod$add(Dense(units = 3, kernel_initializer = Constant(),
+                bias_initializer = RandomNormal()))
+  mod$add(Dense(units = 3, kernel_initializer = RandomUniform(),
+                bias_initializer = TruncatedNormal()))
+  mod$add(Dense(units = 3, kernel_initializer = Orthogonal(),
+                bias_initializer = VarianceScaling()))
+  mod$add(Dense(units = 3, kernel_initializer = Identity(),
+                bias_initializer = lecun_uniform()))
+  mod$add(Dense(units = 3, kernel_initializer = glorot_normal(),
+                bias_initializer = glorot_uniform()))
+  mod$add(Dense(units = 3, kernel_initializer = he_normal(),
+                bias_initializer = he_uniform()))
+  mod$add(Activation("softmax"))
+  keras_compile(mod,  loss = 'categorical_crossentropy', optimizer = RMSprop())
+  
+  keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5, verbose = 0)
+  
 }
 }
 \references{

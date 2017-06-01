@@ -7,17 +7,31 @@
 Permute(dims, input_shape = NULL)
 }
 \arguments{
-\item{dims}{vector of integers. Permutation pattern, does not include the
-samples dimension. Indexing starts at 1.}
+\item{dims}{vector of integers. Permutation pattern,
+does not include the samples dimension.
+Indexing starts at 1.}
 
-\item{input_shape}{only need when first layer of a model; sets the input shape
-of the data}
+\item{input_shape}{only need when first layer of a model;
+sets the input shape of the data}
 }
 \description{
 Permutes the dimensions of the input according to a given pattern.
 }
 \references{
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
+}
+\seealso{
+Other layers: \code{\link{Activation}},
+  \code{\link{ActivityRegularization}},
+  \code{\link{AdvancedActivation}},
+  \code{\link{BatchNormalization}}, \code{\link{Conv}},
+  \code{\link{Dense}}, \code{\link{Dropout}},
+  \code{\link{Embedding}}, \code{\link{Flatten}},
+  \code{\link{GaussianNoise}}, \code{\link{LayerWrapper}},
+  \code{\link{LocallyConnected}}, \code{\link{Masking}},
+  \code{\link{MaxPooling}}, \code{\link{RNN}},
+  \code{\link{RepeatVector}}, \code{\link{Reshape}},
+  \code{\link{Sequential}}
 }
 \author{
 Taylor B. Arnold, \email{taylor.arnold@acm.org}

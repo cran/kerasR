@@ -26,54 +26,60 @@ load_mnist()
 load_boston_housing()
 }
 \arguments{
-\item{label_mode}{either "fine" or "coarse"; how to construct labels for \code{CIFAR100}.}
+\item{label_mode}{either "fine" or "coarse"; how to construct labels
+for \link{load_cifar100}.}
 
-\item{num_words}{integer or NULL. Top most frequent words to consider. Any less frequent
-word will appear as 0 in the sequence data.}
+\item{num_words}{integer or NULL. Top most frequent words to consider.
+Any less frequent word will appear as 0 in the
+sequence data.}
 
-\item{skip_top}{integer. Top most frequent words to ignore (they will appear as 0s in
-the sequence data).}
+\item{skip_top}{integer. Top most frequent words to ignore (they
+will appear as 0s in the sequence data).}
 
-\item{maxlen}{integer. Maximum sequence length. Any longer sequence will be truncated.}
+\item{maxlen}{integer. Maximum sequence length. Any longer sequence
+will be truncated.}
 
 \item{seed}{integer. Seed for reproducible data shuffling.}
 
-\item{start_char}{integer. The start of a sequence will be marked with this character.
-Set to 1 because 0 is usually the padding character.}
+\item{start_char}{integer. The start of a sequence will be marked
+with this character. Set to 1 because 0 is usually
+the padding character.}
 
-\item{oov_char}{integer. words that were cut out because of the num_words or skip_top
-limit will be replaced with this character.}
+\item{oov_char}{integer. words that were cut out because of the
+num_words or skip_top limit will be replaced with
+this character.}
 
-\item{index_from}{integer. Index actual words with this index and higher.}
+\item{index_from}{integer. Index actual words with this index and
+higher.}
 
 \item{test_split}{float. Fraction of the dataset to use for testing.}
 }
 \description{
 These functions all return a named list with elements
-X_train, X_test, Y_train, and Y_test. The first time
+\code{X_train}, \code{X_test}, \code{Y_train}, and \code{Y_test}. The first time
 calling this function will download the datasets locally;
 thereafter they will be loaded from the keras cache
 directory.
 }
 \examples{
-if (run_examples()) {
-boston <- load_boston_housing()
-X_train <- normalize(boston$X_train, 0)
-Y_train <- boston$Y_train
-X_test <- normalize(boston$X_test, 0)
-Y_test <- boston$Y_test
-
-mod <- Sequential()
-mod$add(Dense(units = 200, input_shape = 13))
-mod$add(Activation("relu"))
-mod$add(Dense(units = 200))
-mod$add(Activation("relu"))
-mod$add(Dense(units = 1))
-keras_compile(mod,  loss = 'mse', optimizer = SGD())
-
-keras_fit(mod, scale(X_train), Y_train,
-          batch_size = 32, epochs = 20,
-          verbose = 1, validation_split = 0.1)
+if (keras_available()) {
+  boston <- load_boston_housing()
+  X_train <- normalize(boston$X_train, 0)
+  Y_train <- boston$Y_train
+  X_test <- normalize(boston$X_test, 0)
+  Y_test <- boston$Y_test
+  
+  mod <- Sequential()
+  mod$add(Dense(units = 200, input_shape = 13))
+  mod$add(Activation("relu"))
+  mod$add(Dense(units = 200))
+  mod$add(Activation("relu"))
+  mod$add(Dense(units = 1))
+  keras_compile(mod,  loss = 'mse', optimizer = SGD())
+  
+  keras_fit(mod, scale(X_train), Y_train,
+            batch_size = 32, epochs = 20,
+            verbose = 1, validation_split = 0.1)
 }
 }
 \references{
