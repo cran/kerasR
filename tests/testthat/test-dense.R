@@ -3,16 +3,18 @@ library(kerasR)
 context("Testing dense layers")
 
 check_keras_available <- function() {
-  if (!requireNamespace("reticulate")) {
-    skip("Python or reticulate not available")
-  } else if (!reticulate::py_module_available("keras")) {
-    skip("keras module is not installed.")
+  if (!keras_available(silent = TRUE)) {
+    skip("Keras is not available on this system.")
   }
 }
 
 test_that("dense model", {
   skip_on_cran()
   check_keras_available()
+
+  keras_available()
+  keras_init()
+  keras_check()
 
   X_train <- matrix(rnorm(100 * 10), nrow = 100)
   Y_train <- to_categorical(matrix(sample(0:2, 100, TRUE), ncol = 1), 3)
@@ -29,8 +31,9 @@ test_that("dense model", {
   keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5,
             verbose = 0, validation_split = 0.2)
 
-  pred <- keras_predict(mod, X_train)
-  testthat::expect_equal(dim(pred), c(100L, 3L))
+  pred <- keras_predict(mod, X_train, verbose = 0)
+  pred <- keras_predict_proba(mod, X_train, verbose = 0)
+  pred <- keras_predict_classes(mod, X_train, verbose = 0)
 })
 
 

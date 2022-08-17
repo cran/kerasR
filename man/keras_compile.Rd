@@ -8,7 +8,7 @@ keras_compile(model, optimizer, loss, metrics = NULL,
   sample_weight_mode = NULL)
 }
 \arguments{
-\item{model}{a keras model object created with \link{Sequential}}
+\item{model}{a keras model object, for example created with \code{\link[=Sequential]{Sequential()}}}
 
 \item{optimizer}{name of optimizer) or optimizer object. See
 \link{Optimizers}.}
@@ -18,7 +18,7 @@ possible choices.}
 
 \item{metrics}{vector of metric names to be evaluated by the
 model during training and testing. See Details
-for possible options.}
+for possible options. See \code{\link[=EarlyStopping]{EarlyStopping()}} for using these in callbacks.}
 
 \item{sample_weight_mode}{if you need to do timestep-wise sample
 weighting (2D weights), set this to \code{temporal}.
@@ -29,8 +29,9 @@ Models must be compiled before being fit or used for prediction.
 This function changes to input model object itself, and does not produce
 a return value.
 }
-\details{
-Possible losses are
+\section{Loss functions}{
+
+Possible losses are:
 \itemize{
 \item \code{mean_squared_error}
 \item \code{mean_absolute_error}
@@ -45,6 +46,9 @@ Possible losses are
 \item \code{poisson}
 \item \code{cosine_proximity}.
 }
+}
+
+\section{Metrics}{
 
 Possible metrics are:
 \itemize{
@@ -54,6 +58,7 @@ Possible metrics are:
 \item \code{top_k_categorical_accuracy}
 }
 }
+
 \examples{
 if(keras_available()) {
   X_train <- matrix(rnorm(100 * 10), nrow = 100)
@@ -61,7 +66,7 @@ if(keras_available()) {
 
   mod <- Sequential()
   mod$add(Dense(units = 50, input_shape = dim(X_train)[2]))
-  mod$add(Dropout(rate = 0.5))
+  mod$add(  Dropout(rate = 0.5))
   mod$add(Activation("relu"))
   mod$add(Dense(units = 3))
   mod$add(ActivityRegularization(l1 = 1))
@@ -70,6 +75,22 @@ if(keras_available()) {
 
   keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5,
             verbose = 0, validation_split = 0.2)
+  
+  # You can also add layers directly as arguments to Sequential()
+
+  mod <- Sequential(
+    Dense(units = 50, input_shape = ncol(X_train)),
+    Dropout(rate = 0.5),
+    Activation("relu"),
+    Dense(units = 3),
+    ActivityRegularization(l1 = 1),
+    Activation("softmax")
+  )
+  keras_compile(mod,  loss = 'categorical_crossentropy', optimizer = RMSprop())
+  
+  keras_fit(mod, X_train, Y_train, batch_size = 32, epochs = 5,
+            verbose = 0, validation_split = 0.2)
+  
 }
 
 }
@@ -77,7 +98,7 @@ if(keras_available()) {
 Chollet, Francois. 2015. \href{https://keras.io/}{Keras: Deep Learning library for Theano and TensorFlow}.
 }
 \seealso{
-Other models: \code{\link{LoadSave}},
+Other model functions: \code{\link{LoadSave}},
   \code{\link{Predict}}, \code{\link{Sequential}},
   \code{\link{keras_fit}}
 }
